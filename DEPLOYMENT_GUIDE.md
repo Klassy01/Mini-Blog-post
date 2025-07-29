@@ -89,21 +89,35 @@ Visit your deployed application and test:
 
 ### Common Issues:
 
-1. **Build Fails**
-   - Check that `bin/render-build.sh` is executable
-   - Verify all gems are properly specified in Gemfile
+1. **Build Fails with Rails Binstub Error**
+   - The Rails binstub needs to be regenerated
+   - Run: `bundle config --delete bin && rails app:update:bin`
+   - Commit the updated `bin/rails` file
 
-2. **Database Connection Issues**
+2. **PostgreSQL Connection Error During Build**
+   - Database is not available during build phase on Render
+   - Build script now handles this gracefully
+   - Database operations moved to startup command
+
+3. **Database Connection Issues**
    - Ensure `DATABASE_URL` is properly linked
    - Check that PostgreSQL database is running
+   - Verify the database service is created and connected
 
-3. **Asset Loading Issues**
+4. **Asset Loading Issues**
    - Verify `RAILS_SERVE_STATIC_FILES=true` is set
    - Check asset precompilation in build logs
+   - Ensure assets are properly compiled during build
 
-4. **Master Key Issues**
+5. **Master Key Issues**
    - Ensure `RAILS_MASTER_KEY` is set correctly
    - Check that the key matches your `config/master.key` file
+   - Key should be: `e2ecae55a48739b8e7cf506266c9846b`
+
+6. **Application Not Starting**
+   - Check the startup command includes `rails db:prepare`
+   - Verify all environment variables are set
+   - Check runtime logs for specific errors
 
 ## Test Credentials
 
