@@ -25,8 +25,4 @@ production:
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   url: <%= ENV['DATABASE_URL'] %>
-  database: <%= ENV['DATABASE_URL'].split('/').last %>
-  username: <%= ENV['DATABASE_URL'].split('://').last.split(':').first %>
-  password: <%= ENV['DATABASE_URL'].split(':').last.split('@').first %>
-  host: <%= ENV['DATABASE_URL'].split('@').last.split(':').first %>
-  port: <%= ENV['DATABASE_URL'].split(':').last.split('/').first %>
+  ssl_mode: require
