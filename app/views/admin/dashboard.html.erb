@@ -1,0 +1,141 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="mb-4">
+      <i class="fas fa-cog"></i> Admin Dashboard
+    </h1>
+  </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card bg-primary text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @total_users %></h4>
+            <p class="mb-0">Total Users</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-users fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card bg-success text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @total_posts %></h4>
+            <p class="mb-0">Total Posts</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-newspaper fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card bg-info text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @total_comments %></h4>
+            <p class="mb-0">Total Comments</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-comments fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card bg-warning text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @published_posts %></h4>
+            <p class="mb-0">Published Posts</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-check-circle fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex gap-2">
+          <%= link_to admin_users_path, class: "btn btn-primary" do %>
+            <i class="fas fa-users"></i> Manage Users
+          <% end %>
+          <%= link_to admin_posts_path, class: "btn btn-success" do %>
+            <i class="fas fa-newspaper"></i> Manage Posts
+          <% end %>
+          <%= link_to admin_comments_path, class: "btn btn-info" do %>
+            <i class="fas fa-comments"></i> Manage Comments
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-newspaper"></i> Recent Posts</h5>
+      </div>
+      <div class="card-body">
+        <% Post.includes(:user).recent.limit(5).each do |post| %>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <strong><%= link_to post.title, post_path(post) %></strong>
+              <br>
+              <small class="text-muted">by <%= post.user.display_name %></small>
+            </div>
+            <span class="badge bg-<%= post.published? ? 'success' : 'warning' %>">
+              <%= post.status.titleize %>
+            </span>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-comments"></i> Recent Comments</h5>
+      </div>
+      <div class="card-body">
+        <% Comment.includes(:user, :post).recent.limit(5).each do |comment| %>
+          <div class="mb-2">
+            <strong><%= comment.user.display_name %></strong> on 
+            <%= link_to comment.post.title, post_path(comment.post) %>
+            <br>
+            <small class="text-muted"><%= comment.content.truncate(50) %></small>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

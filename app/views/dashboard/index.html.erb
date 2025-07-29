@@ -1,0 +1,202 @@
+<div class="row">
+  <div class="col-md-12">
+    <h1 class="mb-4">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </h1>
+  </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+  <div class="col-md-3">
+    <div class="card bg-primary text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @published_posts %></h4>
+            <p class="mb-0">Published Posts</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-newspaper fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card bg-warning text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @draft_posts %></h4>
+            <p class="mb-0">Draft Posts</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-edit fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card bg-success text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @total_comments %></h4>
+            <p class="mb-0">Total Comments</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-comments fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3">
+    <div class="card bg-info text-white">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h4 class="mb-0"><%= @recent_notifications.count %></h4>
+            <p class="mb-0">New Notifications</p>
+          </div>
+          <div class="align-self-center">
+            <i class="fas fa-bell fa-2x"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex gap-2">
+          <%= link_to new_post_path, class: "btn btn-success" do %>
+            <i class="fas fa-plus"></i> New Post
+          <% end %>
+          <%= link_to posts_path, class: "btn btn-primary" do %>
+            <i class="fas fa-list"></i> View All Posts
+          <% end %>
+          <% if current_user.admin? %>
+            <%= link_to admin_dashboard_path, class: "btn btn-warning" do %>
+              <i class="fas fa-cog"></i> Admin Panel
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Notifications -->
+<% if @recent_notifications.any? %>
+  <div class="row mb-4">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-bell"></i> Recent Notifications</h5>
+        </div>
+        <div class="card-body">
+          <% @recent_notifications.each do |notification| %>
+            <div class="d-flex align-items-center mb-2">
+              <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 30px; height: 30px;">
+                <i class="fas fa-info"></i>
+              </div>
+              <div class="flex-grow-1">
+                <p class="mb-0"><%= notification.message %></p>
+                <small class="text-muted"><%= notification.created_at.strftime("%B %d, %Y at %I:%M %p") %></small>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- My Posts -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-newspaper"></i> My Posts</h5>
+        <%= link_to new_post_path, class: "btn btn-success btn-sm" do %>
+          <i class="fas fa-plus"></i> New Post
+        <% end %>
+      </div>
+      <div class="card-body">
+        <% if @posts.any? %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Status</th>
+                  <th>Comments</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @posts.each do |post| %>
+                  <tr>
+                    <td>
+                      <%= link_to post.title, post_path(post), class: "text-decoration-none" %>
+                    </td>
+                    <td>
+                      <span class="badge bg-<%= post.published? ? 'success' : 'warning' %>">
+                        <%= post.status.titleize %>
+                      </span>
+                    </td>
+                    <td>
+                      <i class="fas fa-comments"></i> <%= post.comment_count %>
+                    </td>
+                    <td><%= post.created_at.strftime("%B %d, %Y") %></td>
+                    <td>
+                      <div class="btn-group btn-group-sm">
+                        <%= link_to post_path(post), class: "btn btn-outline-primary" do %>
+                          <i class="fas fa-eye"></i>
+                        <% end %>
+                        <%= link_to edit_post_path(post), class: "btn btn-outline-secondary" do %>
+                          <i class="fas fa-edit"></i>
+                        <% end %>
+                        <%= link_to post_path(post), method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-outline-danger" do %>
+                          <i class="fas fa-trash"></i>
+                        <% end %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="d-flex justify-content-center">
+            <%= paginate @posts %>
+          </div>
+        <% else %>
+          <div class="text-center py-4">
+            <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No posts yet</h5>
+            <p class="text-muted">Start writing your first blog post!</p>
+            <%= link_to new_post_path, class: "btn btn-primary" do %>
+              <i class="fas fa-plus"></i> Create Your First Post
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

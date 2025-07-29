@@ -1,0 +1,65 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="fas fa-users"></i> Manage Users</h1>
+      <%= link_to admin_dashboard_path, class: "btn btn-secondary" do %>
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h5 class="mb-0">All Users (<%= @users.count %>)</h5>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Posts</th>
+            <th>Comments</th>
+            <th>Joined</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td>
+                <strong><%= user.display_name %></strong>
+                <% if user.admin? %>
+                  <span class="badge bg-danger">Admin</span>
+                <% end %>
+              </td>
+              <td><%= user.email %></td>
+              <td>
+                <span class="badge bg-primary"><%= user.posts.count %></span>
+              </td>
+              <td>
+                <span class="badge bg-info"><%= user.comments.count %></span>
+              </td>
+              <td><%= user.created_at.strftime("%B %d, %Y") %></td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <%= link_to "View Posts", posts_path(filter: 'my_posts', user_id: user.id), class: "btn btn-outline-primary" %>
+                  <% unless user.admin? %>
+                    <%= link_to "Delete", admin_user_path(user), method: :delete, data: { confirm: 'Are you sure? This will delete all user data.' }, class: "btn btn-outline-danger" %>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center">
+      <%= paginate @users %>
+    </div>
+  </div>
+</div>
