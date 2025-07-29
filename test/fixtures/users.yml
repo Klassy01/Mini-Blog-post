@@ -1,0 +1,9 @@
+one:
+  email: test@example.com
+  username: testuser
+  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>
+
+two:
+  email: another@example.com
+  username: anotheruser
+  encrypted_password: <%= User.new.send(:password_digest, 'password123') %>

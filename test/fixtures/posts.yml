@@ -1,0 +1,13 @@
+one:
+  title: "Test Post"
+  body: "This is a test post body content."
+  status: "published"
+  user: one
+  slug: "test-post"
+
+two:
+  title: "Another Test Post"
+  body: "This is another test post body content."
+  status: "draft"
+  user: two
+  slug: "another-test-post"
