@@ -1,0 +1,15 @@
+nixpacks = "1.15.0"
+
+[phases.build]
+cmds = [
+    "bundle install",
+    "bundle exec rails assets:precompile"
+]
+
+[phases.start]
+cmd = "bundle exec rails db:prepare && bundle exec puma -C config/puma.rb"
+
+[variables]
+RAILS_ENV = "production"
+RAILS_SERVE_STATIC_FILES = "true"
+RAILS_LOG_TO_STDOUT = "true"
